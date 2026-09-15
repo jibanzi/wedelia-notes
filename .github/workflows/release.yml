@@ -1,0 +1,39 @@
+name: release
+
+# Push a tag equal to manifest.json's version (Obsidian wants x.y.z, no "v").
+# Built and attested here rather than on a laptop, so anyone can check that
+# the main.js Obsidian downloads came from this repository at that commit.
+on:
+  push:
+    tags: ['[0-9]+.[0-9]+.[0-9]+']
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Tag matches manifest version
+        run: test "$(node -p "require('./manifest.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: node test/bundle.smoke.cjs
+      - uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            dist/main.js
+            dist/manifest.json
+      # Only what Obsidian downloads; anything else is flagged by the directory review.
+      - run: gh release create "$GITHUB_REF_NAME" dist/main.js dist/manifest.json --title "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

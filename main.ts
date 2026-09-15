@@ -52,7 +52,7 @@ const obsidianFetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
   return {
     ok: response.status >= 200 && response.status < 300,
     status: response.status,
-    json: async () => response.json,
+    json: async (): Promise<unknown> => response.json as unknown,
   };
 }) as unknown as typeof fetch;
 
@@ -121,7 +121,7 @@ export default class WedeliaNotesPlugin extends Plugin {
         note('needs-attention');
       },
       fetchImpl: obsidianFetch,
-      sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+      sleep: (ms) => new Promise((resolve) => window.setTimeout(resolve, ms)),
       nowSeconds: () => Math.floor(Date.now() / 1_000),
       signal: running.signal,
     });

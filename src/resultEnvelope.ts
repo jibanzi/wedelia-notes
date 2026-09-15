@@ -7,7 +7,8 @@
  * copied from the call because the relay compares it against the call anyway;
  * the only fields this side gets to decide are ok, result and error_code.
  *
- * Hashing uses Web Crypto rather than node:crypto: this runs inside Obsidian.
+ * Hashing uses the Web Crypto global rather than node:crypto: this runs inside
+ * Obsidian, including on mobile.
  */
 
 export interface IncomingCall {
@@ -46,14 +47,14 @@ export function canonicalJson(value: unknown): string {
 
 export async function sha256Json(value: unknown): Promise<string> {
   const bytes = new TextEncoder().encode(canonicalJson(value));
-  const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
   return [...new Uint8Array(digest)]
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('');
 }
 
 function uuid(): string {
-  return globalThis.crypto.randomUUID();
+  return crypto.randomUUID();
 }
 
 export async function buildResultEnvelope(

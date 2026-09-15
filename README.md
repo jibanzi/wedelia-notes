@@ -101,6 +101,9 @@ node test/bundle.smoke.cjs
   relay. The relay only accepts a result that matches exactly, so the tests
   check the plugin builds the same bytes.
 - `npm run package` builds a zip with a ready-to-copy `wedelia-notes/` folder.
+- Releases are cut by pushing a tag equal to the `manifest.json` version. The
+  release workflow builds, tests, attests and publishes `main.js` and
+  `manifest.json`, so release assets are never built on a laptop.
 
 `npm run build` also writes `dist/package.json` marking the bundle as
 CommonJS. Obsidian evaluates it that way regardless, but without it Node reads
