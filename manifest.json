@@ -1,0 +1,10 @@
+{
+  "id": "wedelia-notes",
+  "name": "Wedelia Notes",
+  "version": "0.1.1",
+  "minAppVersion": "1.5.7",
+  "description": "Lets Wedelia search this vault on your device, sending only matching excerpts or a note she asks to open.",
+  "author": "HECCEI",
+  "authorUrl": "https://wed.chat",
+  "isDesktopOnly": false
+}

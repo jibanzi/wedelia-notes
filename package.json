@@ -1,0 +1,21 @@
+{
+  "name": "wedelia-obsidian-notes",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "description": "Lets Wedelia search an Obsidian vault locally and return only what she needs.",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p .",
+    "build": "node build.mjs",
+    "package": "npm run build && node package.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "esbuild": "0.28.2",
+    "obsidian": "1.13.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  },
+  "license": "MIT"
+}
