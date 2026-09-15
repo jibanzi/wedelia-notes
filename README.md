@@ -51,8 +51,10 @@ notes are unreachable and says so rather than guessing.
 
 ## Install
 
-**From Obsidian**, once listed in the community directory: open
-**Settings → Community plugins → Browse** and search for "Wedelia Notes".
+**From Obsidian:** open **Settings → Community plugins → Browse** and search
+for "Wedelia Notes", or open its
+[directory page](https://community.obsidian.md/plugins/wedelia-notes) and
+select **Add to Obsidian**.
 
 **Manually:** download `main.js` and `manifest.json` from the
 [latest release](https://github.com/jibanzi/wedelia-notes/releases/latest) into
