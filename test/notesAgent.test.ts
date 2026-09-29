@@ -214,6 +214,16 @@ describe('answerCall', () => {
     })).resolves.toMatchObject({ ok: true });
   });
 
+  it('names the vault in every answer', async () => {
+    const named = { ...vault, name: () => 'ad-wiki' };
+    await expect(answerCall(named, NONE, {
+      tool: 'search_my_notes', args: { query: 'needle' },
+    })).resolves.toMatchObject({ ok: true, result: { vault: 'ad-wiki' } });
+    await expect(answerCall(named, NONE, {
+      tool: 'read_my_note', args: { path: 'a.md' },
+    })).resolves.toMatchObject({ ok: true, result: { vault: 'ad-wiki', path: 'a.md' } });
+  });
+
   it('refuses a tool it does not implement', async () => {
     await expect(answerCall(vault, NONE, {
       tool: 'query_db', args: {},

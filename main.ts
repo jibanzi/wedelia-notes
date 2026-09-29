@@ -81,6 +81,7 @@ export default class WedeliaNotesPlugin extends Plugin {
     this.running = running;
 
     const reader: VaultReader = {
+      name: () => this.app.vault.getName(),
       // Paths, mtimes and the metadata cache are already in memory. Handing
       // them over costs nothing and is what lets a large vault be searched
       // without opening every file in it.

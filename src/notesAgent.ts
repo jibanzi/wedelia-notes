@@ -22,6 +22,11 @@ export interface VaultFile {
 export interface VaultReader {
   markdownFiles(): VaultFile[];
   read(path: string): Promise<string>;
+  /**
+   * The vault's own name, as Obsidian shows it. Sent with every answer so she
+   * can say which vault she is reading instead of guessing one from memory.
+   */
+  name?(): string;
 }
 
 export interface NotesAgentConfig {
@@ -198,16 +203,18 @@ export async function answerCall(
   config: Pick<NotesAgentConfig, 'excludedFolders'>,
   call: CallEnvelope,
 ): Promise<{ ok: true; result: unknown } | { ok: false; errorCode: string }> {
+  const vault = reader.name?.();
+  const named = vault ? { vault } : {};
   if (call.tool === 'search_my_notes') {
     const query = typeof call.args.query === 'string' ? call.args.query : '';
     const limit = typeof call.args.limit === 'number' ? call.args.limit : MAX_HITS;
-    return { ok: true, result: { hits: await searchVault(reader, config, query, limit) } };
+    return { ok: true, result: { ...named, hits: await searchVault(reader, config, query, limit) } };
   }
   if (call.tool === 'read_my_note') {
     const path = typeof call.args.path === 'string' ? call.args.path : '';
     const read = await readNote(reader, config, path);
     return read.ok
-      ? { ok: true, result: { path, body: read.body } }
+      ? { ok: true, result: { ...named, path, body: read.body } }
       : { ok: false, errorCode: read.errorCode };
   }
   return { ok: false, errorCode: 'TOOL_FAILED' };

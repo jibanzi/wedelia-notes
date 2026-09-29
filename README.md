@@ -13,6 +13,8 @@ plugin searches the vault on your computer, and only what matched is sent back.
 - **Opening a note** sends that one note, capped at 40,000 characters. Wedelia
   can only open notes you share (see below), and asking for a note you don't
   share gets the same answer as asking for one that doesn't exist.
+- **Every answer** also carries the vault's name, so Wedelia can tell you which
+  vault she is reading.
 - Nothing else. The vault is not uploaded, not indexed on a server, and there
   is no copy of it anywhere else.
 
