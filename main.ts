@@ -22,7 +22,8 @@ interface Settings extends NotesAgentConfig {
 const DEFAULTS: Settings = {
   enabled: false,
   apiOrigin: 'https://api.wed.chat',
-  username: 'wednesday',
+  // Display only: the server authenticates by the password alone.
+  username: 'wedelia',
   password: '',
   excludedFolders: [],
   status: '',
@@ -81,6 +82,7 @@ export default class WedeliaNotesPlugin extends Plugin {
     this.running = running;
 
     const reader: VaultReader = {
+      name: () => this.app.vault.getName(),
       // Paths, mtimes and the metadata cache are already in memory. Handing
       // them over costs nothing and is what lets a large vault be searched
       // without opening every file in it.

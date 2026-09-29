@@ -46,7 +46,7 @@ export async function runPollLoop(deps: PollLoopDeps): Promise<void> {
       !ticket
       || ticket.expires_at - TICKET_REFRESH_MARGIN_SECONDS <= deps.nowSeconds()
     ) {
-      ticket = await mintTicket(deps.config, deps.fetchImpl);
+      ticket = await mintTicket(deps.config, deps.fetchImpl, deps.reader.name?.());
       if (!ticket) {
         deps.onError?.('mint', 'could not get a ticket: check the vault password');
         await deps.sleep(RETRY_MS);

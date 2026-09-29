@@ -22,6 +22,11 @@ export interface VaultFile {
 export interface VaultReader {
   markdownFiles(): VaultFile[];
   read(path: string): Promise<string>;
+  /**
+   * The vault's own name, as Obsidian shows it. Sent with every answer so she
+   * can say which vault she is reading instead of guessing one from memory.
+   */
+  name?(): string;
 }
 
 export interface NotesAgentConfig {
@@ -198,16 +203,18 @@ export async function answerCall(
   config: Pick<NotesAgentConfig, 'excludedFolders'>,
   call: CallEnvelope,
 ): Promise<{ ok: true; result: unknown } | { ok: false; errorCode: string }> {
+  const vault = reader.name?.();
+  const named = vault ? { vault } : {};
   if (call.tool === 'search_my_notes') {
     const query = typeof call.args.query === 'string' ? call.args.query : '';
     const limit = typeof call.args.limit === 'number' ? call.args.limit : MAX_HITS;
-    return { ok: true, result: { hits: await searchVault(reader, config, query, limit) } };
+    return { ok: true, result: { ...named, hits: await searchVault(reader, config, query, limit) } };
   }
   if (call.tool === 'read_my_note') {
     const path = typeof call.args.path === 'string' ? call.args.path : '';
     const read = await readNote(reader, config, path);
     return read.ok
-      ? { ok: true, result: { path, body: read.body } }
+      ? { ok: true, result: { ...named, path, body: read.body } }
       : { ok: false, errorCode: read.errorCode };
   }
   return { ok: false, errorCode: 'TOOL_FAILED' };
@@ -228,6 +235,8 @@ export interface Ticket {
 export async function mintTicket(
   config: Pick<NotesAgentConfig, 'apiOrigin' | 'username' | 'password'>,
   fetchImpl: typeof fetch,
+  /** Sent so the App can show which vault is connected. */
+  vaultName?: string,
 ): Promise<Ticket | undefined> {
   const authorization = `Basic ${
     btoa(`${config.username}:${config.password}`)
@@ -235,7 +244,9 @@ export async function mintTicket(
   try {
     const response = await fetchImpl(`${config.apiOrigin}/v1/vault/notes/ticket`, {
       method: 'POST',
-      headers: { authorization },
+      headers: vaultName
+        ? { authorization, 'x-wedelia-vault': encodeURIComponent(vaultName) }
+        : { authorization },
     });
     if (!response.ok) return undefined;
     const body = await response.json() as Ticket;
