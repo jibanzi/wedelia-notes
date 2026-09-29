@@ -22,7 +22,8 @@ interface Settings extends NotesAgentConfig {
 const DEFAULTS: Settings = {
   enabled: false,
   apiOrigin: 'https://api.wed.chat',
-  username: 'wednesday',
+  // Display only: the server authenticates by the password alone.
+  username: 'wedelia',
   password: '',
   excludedFolders: [],
   status: '',
