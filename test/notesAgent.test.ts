@@ -242,6 +242,15 @@ describe('mintTicket', () => {
     apiOrigin: 'https://api.example', username: 'wednesday', password: 'tok',
   };
 
+  it('names the vault it answers for', async () => {
+    const fetchImpl = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(
+      JSON.stringify({ ticket: 't', expires_at: 1, relay_origin: 'https://r' }),
+    ));
+    await mintTicket(config, fetchImpl as typeof fetch, '我的 ad-wiki');
+    const headers = fetchImpl.mock.calls[0]![1]!.headers as Record<string, string>;
+    expect(decodeURIComponent(headers['x-wedelia-vault']!)).toBe('我的 ad-wiki');
+  });
+
   it('sends the vault credential and returns the ticket', async () => {
     const fetchImpl = vi.fn(async (
       _input: RequestInfo | URL,

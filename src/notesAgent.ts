@@ -235,6 +235,8 @@ export interface Ticket {
 export async function mintTicket(
   config: Pick<NotesAgentConfig, 'apiOrigin' | 'username' | 'password'>,
   fetchImpl: typeof fetch,
+  /** Sent so the App can show which vault is connected. */
+  vaultName?: string,
 ): Promise<Ticket | undefined> {
   const authorization = `Basic ${
     btoa(`${config.username}:${config.password}`)
@@ -242,7 +244,9 @@ export async function mintTicket(
   try {
     const response = await fetchImpl(`${config.apiOrigin}/v1/vault/notes/ticket`, {
       method: 'POST',
-      headers: { authorization },
+      headers: vaultName
+        ? { authorization, 'x-wedelia-vault': encodeURIComponent(vaultName) }
+        : { authorization },
     });
     if (!response.ok) return undefined;
     const body = await response.json() as Ticket;
