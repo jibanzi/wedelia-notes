@@ -25,6 +25,21 @@ message. "Not stored" is true. "Never leaves your machine" would not be.
 It only works while Obsidian is open. When it is closed, Wedelia is told your
 notes are unreachable and says so rather than guessing.
 
+## Use it from Claude, ChatGPT and other AI apps
+
+The same plugin also answers AI apps you allow, through a remote MCP server:
+
+1. In Claude or ChatGPT, add a custom connector with the address
+   `https://api.wed.chat/mcp/notes`.
+2. Sign in with your Wedelia account and press **Allow** for that app.
+3. Ask it about your notes. It gets two read-only tools, `search` and
+   `fetch`, with the same limits as above: matching excerpts, or one note it
+   opens. It cannot change or delete anything.
+
+What it receives is handled by that app under its own privacy policy. Free
+Wedelia accounts get 50 searches a day across all apps. You can remove an
+app's access at any time on the Obsidian page of the Wedelia app.
+
 ## Never searched or opened
 
 - What Wedelia's own vault mirror writes into your vault: the top-level
